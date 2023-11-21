@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿namespace Domain;
 
-namespace Domain;
-
-public record Product(Guid Id, string Name, IdentityUser Use);
+public class Product
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; }
+};
