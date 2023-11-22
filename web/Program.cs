@@ -19,7 +19,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-builder.Services.AddAutoMapper(typeof(ProductMapper));
+builder.Services.AddAutoMapper(
+    typeof(ProductMapper),
+    typeof(PriceHistoryMapper)
+    );
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(Assembly.Load(new AssemblyName(nameof(Application))))

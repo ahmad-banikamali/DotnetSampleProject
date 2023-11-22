@@ -19,7 +19,7 @@ public class GetAllPricesService : Query<GetAllPricesRequest, GetAllPricesRespon
         var priceHistories =
             await UnitOfWork.PriceHistoryRepository.Get(
                 filter: history => history.ProductId == request.ProductId,
-                includeProperties: "Product");
+                includeProperties: nameof(Domain.PriceHistory.Product));
 
         return new Response<GetAllPricesResponse>(
             new GetAllPricesResponse(Mapper.Map<ICollection<PriceHistoryItem>>(priceHistories)));

@@ -1,7 +1,23 @@
-﻿@model Application.Product.Query.GetProduct.Dto.GetProductResponse
+﻿@using Application.PriceHistory.Query
+@model Application.PriceHistory.Command.Dto.AddPriceRequest 
 
-<h1>i am @Model.Name</h1>  
+@if (ViewBag.productName != null)
+{
+    <h1>i am @ViewBag.productName</h1>
+}
 
+@if (ViewBag.prices != null)
+{
+    <ul>
+        @foreach (var price in (ICollection<PriceHistoryItem>)ViewBag.prices)
+        {
+            <li>@price.Price @price.Date.ToShortDateString()</li>
+        }
+    </ul>
+}
 
-
-
+<form method="post">
+    <input type="text" asp-for="price">
+    <input type="hidden" asp-for="productId" value="@ViewBag.productId">
+    <input type="submit" value="add price">
+</form>

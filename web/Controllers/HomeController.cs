@@ -1,12 +1,16 @@
-﻿using System.Data.Common;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using Application.Auth.Login;
+using Application.Auth.Signup;
+using Application.PriceHistory.Command;
+using Application.PriceHistory.Command.Dto;
+using Application.PriceHistory.Query;
 using Application.Product.Command.AddProduct;
 using Application.Product.Query.GetAllProducts.Dto;
 using Application.Product.Query.GetProduct.Dto;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repository;
 using Web.Models;
 
 namespace Web.Controllers;
@@ -39,27 +43,59 @@ public class HomeController : Controller
     }
 
 
+    [Authorize]
     public async Task<IActionResult> ProductDetail(Guid id)
     {
         var response = await _mediator.Send(new GetProductRequest(id));
 
-        if (response.Data != null)
-        {
-            TempData["id"] = response.Data.Id;
-        }
+        if (response.Data == null)
+            return View();
 
-        return response.Data != null ? View(response.Data) : Error();
+        ViewBag.productId = response.Data.Id;
+        ViewBag.productName = response.Data.Name;
+
+        var prices = await _mediator.Send(new GetAllPricesRequest(id));
+        ViewBag.prices = prices.Data.PriceHistoryItems;
+
+        return View();
     }
 
+    [Authorize]
     [HttpPost]
-    public async Task<IActionResult> ProductDetail(string price)
+    public async Task<IActionResult> ProductDetail(AddPriceRequest addPriceRequest)
     {
-        return Error();
+        var productId = addPriceRequest.productId;
+        await _mediator.Send(addPriceRequest);
+        return RedirectToAction("ProductDetail", new { Guid = productId });
     }
 
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginRequest request)
+    {
+        await _mediator.Send(request);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public IActionResult Signup()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Signup(SignupRequest request)
+    {
+        await _mediator.Send(request);
+        return RedirectToAction(nameof(Index));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

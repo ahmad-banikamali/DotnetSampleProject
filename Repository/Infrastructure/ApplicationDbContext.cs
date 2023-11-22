@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repository.Infrastructure.EntityConfigurations;
 
@@ -13,7 +14,8 @@ public class ApplicationDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfiguration(new PriceHistoryConfiguration());
-
+        builder.Entity<IdentityRole>().HasData(new List<IdentityRole> {new("admin")});
+        builder.Entity<IdentityRole>().HasData(new List<IdentityRole> {new("other")});
         base.OnModelCreating(builder);
     }
 }

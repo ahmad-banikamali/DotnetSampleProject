@@ -1,4 +1,5 @@
 ﻿using Application.Infrastructure;
+using Application.PriceHistory.Command.Dto;
 using AutoMapper;
 using Repository.Infrastructure;
 
@@ -13,6 +14,7 @@ public class AddPriceService : Command<AddPriceRequest>
     public override async Task<Response> Handle(AddPriceRequest request, CancellationToken cancellationToken)
     {
         await UnitOfWork.PriceHistoryRepository.Insert(Mapper.Map<Domain.PriceHistory>(request));
+        await UnitOfWork.Save();
         return new Response();
     }
 }

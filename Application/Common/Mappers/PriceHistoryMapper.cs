@@ -1,4 +1,5 @@
 ﻿using Application.PriceHistory.Command;
+using Application.PriceHistory.Command.Dto;
 using Application.PriceHistory.Query;
 using AutoMapper;
 
