@@ -1,5 +1,4 @@
-﻿using Application.Common;
-using Application.Infrastructure;
+﻿using Application.Infrastructure;
 using AutoMapper;
 using Repository.Infrastructure;
 
@@ -15,17 +14,16 @@ public class AddProductService : Command<AddProductRequest>
     {
         try
         {
-            // UnitOfWork.CreateTransaction();
+            UnitOfWork.CreateTransaction();
             var product = Mapper.Map<Domain.Product>(request);
             await UnitOfWork.ProductRepository.Insert(product);
             await UnitOfWork.Save();
-            // UnitOfWork.Commit();
+            UnitOfWork.Commit();
             return new Response();
         }
         catch (Exception e)
         {
-            // UnitOfWork.Rollback();
-            Console.WriteLine(e);
+            UnitOfWork.Rollback();
             return new Response(IsSuccess: false, Message: e.Message);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Repository.Infrastructure.EntityConfigurations;
 
 namespace Repository.Infrastructure;
 

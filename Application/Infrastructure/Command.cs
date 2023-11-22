@@ -4,8 +4,7 @@ using Repository.Infrastructure;
 
 namespace Application.Infrastructure;
 
-public abstract class 
-    Command<TRequest> : RepositoryMapperProvider, IRequestHandler<TRequest, Response>
+public abstract class Command<TRequest> : RepositoryMapperProvider, IRequestHandler<TRequest, Response>
     where TRequest : IRequest<Response>
 {
     protected Command(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)

@@ -1,9 +1,28 @@
-﻿@model bool
+﻿@using Application.Product.Query.GetAllProducts.Dto
+@model Application.Product.Command.AddProduct.AddProductRequest
+
 @{
     ViewData["Title"] = "Home Page";
+    ICollection<ProductItem> data = ViewBag.Data;
 }
 
-result is @Model
+
+<form method="post">
+    <input asp-for="@Model.Name" type="text" value="">
+    <input type="submit" value="add product"/>
+</form>
+
+<ul>
+
+    @foreach (var p in data)
+    {
+        <li>
+            <a asp-action="ProductDetail" asp-route-id="@p.Id">@p.Name</a>
+        </li>
+    }
+
+</ul>
+
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>

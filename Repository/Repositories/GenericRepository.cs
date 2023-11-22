@@ -1,33 +1,31 @@
 ﻿using System.Linq.Expressions;
-using Domain;
 using Microsoft.EntityFrameworkCore;
-using Repository.Infrastructure;
 using Repository.IRepositories;
 
 namespace Repository.Repositories;
 
-public class GenericRepository<T,TContext> : IGenericRepository<T> where T : class where TContext: DbContext
+public class GenericRepository<TEntity,TContext> : IGenericRepository<TEntity> where TEntity : class where TContext: DbContext
 {
     private readonly TContext _context;
-    private readonly DbSet<T> _dbSet; 
+    private readonly DbSet<TEntity> _dbSet; 
     protected GenericRepository(TContext context)
     {
         _context = context;
-        _dbSet = context.Set<T>();
+        _dbSet = context.Set<TEntity>();
     }
  
 
-    public async Task<T?> GetById(object id)
+    public async Task<TEntity?> GetById(object id)
     {
         return await _dbSet.FindAsync(id);
     }
 
 
-    public Task<List<T>> Get(Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, string includeProperties = "")
+    public Task<List<TEntity>> Get(Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "")
     {
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
             {
@@ -35,7 +33,7 @@ public class GenericRepository<T,TContext> : IGenericRepository<T> where T : cla
             }
 
             foreach (var includeProperty in includeProperties.Split
-                         (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                         (new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProperty);
             }
@@ -44,12 +42,12 @@ public class GenericRepository<T,TContext> : IGenericRepository<T> where T : cla
         }
     }
 
-    public async Task Insert(T obj)
+    public async Task Insert(TEntity obj)
     {
         await _dbSet.AddAsync(obj);
     }
 
-    public Task Update(T obj)
+    public Task Update(TEntity obj)
     {
         if (_context.Entry(obj).State == EntityState.Detached)
             _dbSet.Attach(obj);
@@ -57,12 +55,11 @@ public class GenericRepository<T,TContext> : IGenericRepository<T> where T : cla
         return Task.CompletedTask;
     }
 
-    public Task Delete(T obj)
+    public Task Delete(TEntity obj)
     {
-        if (_context.Entry(obj).State == EntityState.Detached)
-        {
+        if (_context.Entry(obj).State == EntityState.Detached) 
             _dbSet.Attach(obj);
-        }
+        
         _context.Entry(obj).State = EntityState.Deleted;
         return Task.CompletedTask;
     }

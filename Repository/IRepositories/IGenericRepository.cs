@@ -3,14 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.IRepositories;
 
-public interface IGenericRepository<T> where T : class
-{ 
-    Task<T?> GetById(object id);
-    Task<List<T>> Get(Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        string includeProperties = "");
-    
-    Task Insert(T obj);
-    Task Update(T obj);
-    Task Delete(T obj);
+public interface IGenericRepository<TEntity> where TEntity : class
+{
+    Task<TEntity?> GetById(object id);
+
+    Task<List<TEntity>> Get(
+        Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        string includeProperties = ""
+    );
+
+    Task Insert(TEntity obj);
+    Task Update(TEntity obj);
+    Task Delete(TEntity obj);
 }

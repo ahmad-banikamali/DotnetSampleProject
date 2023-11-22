@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Repository.Infrastructure;
+namespace Repository.Infrastructure.EntityConfigurations;
 
 internal class PriceHistoryConfiguration : IEntityTypeConfiguration<PriceHistory>
 {

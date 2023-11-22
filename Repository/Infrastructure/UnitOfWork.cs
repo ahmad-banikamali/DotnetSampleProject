@@ -12,8 +12,11 @@ public class UnitOfWork<TContext> : IUnitOfWork, IDisposable where TContext : Db
     public IProductRepository ProductRepository { get; }
     public IPriceHistoryRepository PriceHistoryRepository { get; }
 
-    public UnitOfWork(TContext context, IProductRepository productRepository,
-        IPriceHistoryRepository priceHistoryRepository)
+    public UnitOfWork(
+        TContext context,
+        IProductRepository productRepository,
+        IPriceHistoryRepository priceHistoryRepository
+    )
     {
         _dbContext = context;
         ProductRepository = productRepository;
@@ -47,8 +50,7 @@ public class UnitOfWork<TContext> : IUnitOfWork, IDisposable where TContext : Db
     {
         try
         {
-            var a = await _dbContext.SaveChangesAsync();
-            Console.WriteLine($"hi {a}");
+            await _dbContext.SaveChangesAsync();
         }
         catch (Exception e)
         {
