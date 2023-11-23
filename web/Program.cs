@@ -1,5 +1,7 @@
 using System.Reflection;
 using Application.Common.Mappers;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repository;
@@ -10,6 +12,23 @@ using Repository.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+/*sample project:
+    ef core //
+    dapper
+    api caching
+    authorization jwt roles
+    unit of work //
+    mediatR //
+    signalR
+    unit test
+    integration test
+    cors
+    routing
+    multi database
+    fluent validation //
+    */
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddDbContext<ApplicationDbContext>(optionsAction: optionsBuilder =>
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("sqlserver"))
@@ -18,14 +37,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(optionsAction: optionsBuilde
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+var applicationAssembly = Assembly.Load(new AssemblyName(nameof(Application)));
+
+
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssembly(applicationAssembly);
+
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblies(applicationAssembly)
+);
+
 
 builder.Services.AddAutoMapper(
     typeof(ProductMapper),
     typeof(PriceHistoryMapper)
-    );
-
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssemblies(Assembly.Load(new AssemblyName(nameof(Application))))
 );
 
 
